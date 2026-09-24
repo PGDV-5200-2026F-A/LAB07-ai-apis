@@ -1,3 +1,19 @@
+function sleep(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+function saveJSON(obj) {
+  const jsonString = JSON.stringify(obj, null, 2);
+  const blob = new Blob([jsonString], { type: "application/json" });
+
+  const link = document.createElement("a");
+  link.href = URL.createObjectURL(blob);
+  link.download = "data.json";
+  link.click();
+
+  URL.revokeObjectURL(link.href);
+}
+
 async function imageUrlToBase64(url) {
   const response = await fetch(url);
   const blob = await response.blob();
@@ -14,6 +30,7 @@ async function imageUrlToBase64(url) {
   });
 }
 
+// https://ai.google.dev/gemini-api/docs
 async function buildPrompt(text, imageUrls) {
   const input = [{ type: "text", text }];
 
@@ -35,8 +52,11 @@ async function buildPrompt(text, imageUrls) {
       "x-goog-api-key": LLM_KEY,
     },
     body: JSON.stringify({
-      model: "gemini-3.1-flash-lite",
-      input
+      model: "gemini-3.5-flash-lite",
+      input: input,
+      generation_config: {
+        thinking_level: "minimal"
+      }
     }),
   };
 }
