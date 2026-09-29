@@ -1,6 +1,8 @@
 .DS_*
+__pycache__
 *.pdf
 *.0.html
 *.0.js
 *.0.css
+keys.py
 NOTES.md
