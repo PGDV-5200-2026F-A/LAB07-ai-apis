@@ -14,6 +14,20 @@ document.addEventListener("DOMContentLoaded", () => {
     const mData = await mRes.json();
 
     // TODO: build prompt using row location
+    const row = mData[0];
+    const locList = JSON.stringify(row.location);
+
+    const textPrompt = "given this list of locations, " +
+      "extract the one that is a country " +
+      "and return it as text: " +
+      locList;
+    const mPrompt = await buildPrompt(textPrompt);
+
+    const llmRes = await fetch(GEMINI_URL, mPrompt);
+    const resData = await llmRes.json();
+
+    const resOutput = resData.steps.filter(x => x.type == "model_output")[0];
+    console.log(resOutput.content[0].text);
   });
 
   imgButton.addEventListener("click", async () => {
